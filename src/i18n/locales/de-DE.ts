@@ -8,7 +8,7 @@ const deDE: Translation = {
   },
   notice: {
     missing: ({ languages }) => `Diese Seite ist nur auf ${languages} verfügbar.`,
-    available: ({ language }) => `Diese Seite gibt es auch auf ${language}:`,
+    available: ({ language }) => `Diese Seite gibt es auch auf ${language}.`,
   },
   redirect: {
     title: "Weiterleitung…",

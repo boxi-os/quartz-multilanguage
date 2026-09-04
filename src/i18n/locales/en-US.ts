@@ -8,7 +8,7 @@ export default {
     missing: ({ languages }: { languages: string }) =>
       `This page is only available in ${languages}.`,
     available: ({ language }: { language: string }) =>
-      `This page is also available in ${language}:`,
+      `This page is also available in ${language}.`,
   },
   redirect: {
     title: "Redirecting…",

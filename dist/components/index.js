@@ -524,7 +524,7 @@ var en_US_default = {
   },
   notice: {
     missing: ({ languages }) => `This page is only available in ${languages}.`,
-    available: ({ language }) => `This page is also available in ${language}:`
+    available: ({ language }) => `This page is also available in ${language}.`
   },
   redirect: {
     title: "Redirecting\u2026",
@@ -541,7 +541,7 @@ var deDE = {
   },
   notice: {
     missing: ({ languages }) => `Diese Seite ist nur auf ${languages} verf\xFCgbar.`,
-    available: ({ language }) => `Diese Seite gibt es auch auf ${language}:`
+    available: ({ language }) => `Diese Seite gibt es auch auf ${language}.`
   },
   redirect: {
     title: "Weiterleitung\u2026",
@@ -559,7 +559,7 @@ var frFR = {
   },
   notice: {
     missing: ({ languages }) => `Cette page n\u2019est disponible qu\u2019en ${languages}.`,
-    available: ({ language }) => `Cette page est aussi disponible en ${language} :`
+    available: ({ language }) => `Cette page est aussi disponible en ${language}.`
   },
   redirect: {
     title: "Redirection\u2026",
@@ -577,7 +577,7 @@ var esES = {
   },
   notice: {
     missing: ({ languages }) => `Esta p\xE1gina solo est\xE1 disponible en ${languages}.`,
-    available: ({ language }) => `Esta p\xE1gina tambi\xE9n est\xE1 disponible en ${language}:`
+    available: ({ language }) => `Esta p\xE1gina tambi\xE9n est\xE1 disponible en ${language}.`
   },
   redirect: {
     title: "Redirigiendo\u2026",
@@ -610,7 +610,7 @@ function classNames(...classes) {
 }
 
 // src/components/styles/language-switcher.scss
-var language_switcher_default = '@charset "UTF-8";\n.multilanguage-switcher {\n  font-size: 0.9rem;\n  line-height: 1.5;\n}\n.multilanguage-switcher ul {\n  list-style: none;\n  margin: 0;\n  padding: 0;\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: 0.35rem;\n}\n.multilanguage-switcher li {\n  margin: 0;\n}\n.multilanguage-switcher a {\n  text-decoration: none;\n  color: var(--darkgray);\n}\n.multilanguage-switcher a:hover {\n  color: var(--secondary);\n}\n.multilanguage-switcher a.fallback {\n  opacity: 0.7;\n}\n.multilanguage-switcher .current {\n  font-weight: 700;\n  color: var(--dark);\n}\n.multilanguage-switcher .disabled {\n  color: var(--gray);\n  cursor: default;\n}\n.multilanguage-switcher .separator {\n  color: var(--gray);\n  user-select: none;\n}\n.multilanguage-switcher.style-flags {\n  font-size: 1.1rem;\n}\n.multilanguage-switcher.style-flags ul {\n  gap: 0.25rem;\n}\n.multilanguage-switcher.style-dropdown {\n  position: relative;\n}\n.multilanguage-switcher.style-dropdown summary {\n  cursor: pointer;\n  list-style: none;\n  display: inline-block;\n  padding: 0.15rem 0.5rem;\n  border: 1px solid var(--lightgray);\n  border-radius: 5px;\n  color: var(--darkgray);\n}\n.multilanguage-switcher.style-dropdown summary::-webkit-details-marker {\n  display: none;\n}\n.multilanguage-switcher.style-dropdown summary::after {\n  content: " \u25BE";\n  color: var(--gray);\n}\n.multilanguage-switcher.style-dropdown[open] summary {\n  border-color: var(--gray);\n}\n.multilanguage-switcher.style-dropdown ul {\n  position: absolute;\n  z-index: 10;\n  min-width: 100%;\n  margin-top: 0.25rem;\n  padding: 0.25rem 0;\n  flex-direction: column;\n  align-items: stretch;\n  gap: 0;\n  background-color: var(--light);\n  border: 1px solid var(--lightgray);\n  border-radius: 5px;\n  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);\n}\n.multilanguage-switcher.style-dropdown li {\n  padding: 0.15rem 0.75rem;\n  white-space: nowrap;\n}\n.multilanguage-switcher.style-dropdown li:hover {\n  background-color: var(--highlight);\n}';
+var language_switcher_default = '@charset "UTF-8";\n.multilanguage-switcher {\n  font-size: 0.9rem;\n  line-height: 1.5;\n}\n.multilanguage-switcher ul {\n  list-style: none;\n  margin: 0;\n  padding: 0;\n  display: flex;\n  flex-wrap: nowrap;\n  align-items: center;\n  gap: 0.35rem;\n  white-space: nowrap;\n}\n.multilanguage-switcher li {\n  margin: 0;\n}\n.multilanguage-switcher a {\n  text-decoration: none;\n  color: var(--darkgray);\n}\n.multilanguage-switcher a:hover {\n  color: var(--secondary);\n}\n.multilanguage-switcher a.fallback {\n  opacity: 0.7;\n}\n.multilanguage-switcher .current {\n  font-weight: 700;\n  color: var(--dark);\n}\n.multilanguage-switcher .disabled {\n  color: var(--gray);\n  cursor: default;\n}\n.multilanguage-switcher .separator {\n  color: var(--gray);\n  user-select: none;\n}\n.multilanguage-switcher.style-flags {\n  font-size: 1.1rem;\n}\n.multilanguage-switcher.style-flags ul {\n  gap: 0.25rem;\n}\n.multilanguage-switcher.style-dropdown {\n  position: relative;\n}\n.multilanguage-switcher.style-dropdown summary {\n  cursor: pointer;\n  list-style: none;\n  display: inline-block;\n  padding: 0.15rem 0.5rem;\n  border: 1px solid var(--lightgray);\n  border-radius: 5px;\n  color: var(--darkgray);\n}\n.multilanguage-switcher.style-dropdown summary::-webkit-details-marker {\n  display: none;\n}\n.multilanguage-switcher.style-dropdown summary::after {\n  content: " \u25BE";\n  color: var(--gray);\n}\n.multilanguage-switcher.style-dropdown[open] summary {\n  border-color: var(--gray);\n}\n.multilanguage-switcher.style-dropdown ul {\n  position: absolute;\n  z-index: 10;\n  min-width: 100%;\n  margin-top: 0.25rem;\n  padding: 0.25rem 0;\n  flex-direction: column;\n  align-items: stretch;\n  gap: 0;\n  background-color: var(--light);\n  border: 1px solid var(--lightgray);\n  border-radius: 5px;\n  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);\n}\n.multilanguage-switcher.style-dropdown li {\n  padding: 0.15rem 0.75rem;\n  white-space: nowrap;\n}\n.multilanguage-switcher.style-dropdown li:hover {\n  background-color: var(--highlight);\n}';
 function labelFor(lang, targetSlug, opts, index) {
   if (opts.switcher.style === "flags") return lang.flag;
   switch (opts.switcher.label) {

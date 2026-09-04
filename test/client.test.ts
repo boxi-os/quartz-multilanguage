@@ -35,11 +35,11 @@ const cfg: ClientConfig = {
   notices: {
     de: {
       missing: "Diese Seite ist nur auf {{}} verfügbar.",
-      available: "Diese Seite gibt es auch auf {{}}:",
+      available: "Diese Seite gibt es auch auf {{}}.",
     },
     en: {
       missing: "This page is only available in {{}}.",
-      available: "This page is also available in {{}}:",
+      available: "This page is also available in {{}}.",
     },
   },
 };
@@ -117,7 +117,7 @@ describe("client script", () => {
     expect(notice.hidden).toBe(false);
     const p = notice.querySelector<HTMLElement>("p")!;
     expect(p.lang).toBe("en-US");
-    expect(p.textContent).toBe("This page is also available in English: English");
+    expect(p.textContent).toBe("This page is also available in English.");
     expect(notice.querySelector("[data-ml-languages]")).toBeNull();
     const link = p.querySelector<HTMLAnchorElement>("a[data-ml-link]")!;
     expect(link.getAttribute("href")).toBe("/en/notes/coffee");
@@ -188,6 +188,14 @@ describe("client script", () => {
     expect(time.textContent).toBe(expected);
     expect(time.textContent).not.toBe("Jan 05, 2026");
     expect(time.dataset.mlLocalized).toBe("de-DE");
+  });
+
+  it("syncs <html lang> with the page language after SPA navigation", async () => {
+    setLanguages(["de"]);
+    mount({ de: "de/notizen/kaffee" });
+    document.documentElement.lang = "en-US"; // stale value left by the previous page
+    await nav();
+    expect(document.documentElement.lang).toBe("de-DE");
   });
 
   it("registers cleanups for every listener", async () => {

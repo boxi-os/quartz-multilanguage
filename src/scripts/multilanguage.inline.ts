@@ -166,16 +166,17 @@ async function showNotice(): Promise<void> {
   p.lang = localeOf(preferred);
 
   if (target) {
+    // The language name itself is the link, e.g. "Diese Seite gibt es auch auf [Deutsch]."
     const [before = "", after = ""] = texts.available.split("{{}}");
-    const strong = document.createElement("strong");
-    strong.textContent = nativeName(preferred);
     const link = document.createElement("a");
     link.className = "internal";
     link.dataset.mlLink = "";
     link.href = slugToPath(target);
     link.hreflang = preferred;
-    link.textContent = nativeName(preferred);
-    p.append(before, strong, after, " ", link);
+    const strong = document.createElement("strong");
+    strong.textContent = nativeName(preferred);
+    link.append(strong);
+    p.append(before, link, after);
   } else {
     const [before = "", after = ""] = texts.missing.split("{{}}");
     const available = Object.keys(translations).length > 0 ? Object.keys(translations) : [lang];
@@ -206,8 +207,22 @@ function localizeDates(): void {
   }
 }
 
+/**
+ * Quartz's SPA router swaps the body but leaves `<html lang>` untouched, so after a switch
+ * the document would keep the previous page's language. Sync it from the page markup.
+ */
+function syncHtmlLang(): void {
+  const switcher = document.querySelector<HTMLElement>(".multilanguage-switcher[data-lang]");
+  const notice = document.querySelector<HTMLElement>(".multilanguage-notice[data-ml-lang]");
+  const code = switcher?.dataset.lang ?? notice?.dataset.mlLang;
+  if (!code) return;
+  const locale = localeOf(code);
+  if (document.documentElement.lang !== locale) document.documentElement.lang = locale;
+}
+
 function setup(): void {
   if (!cfg) return;
+  syncHtmlLang();
   rememberOnClick();
   setupDropdowns();
   localizeDates();

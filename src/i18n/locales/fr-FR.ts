@@ -8,7 +8,7 @@ const frFR: Translation = {
   },
   notice: {
     missing: ({ languages }) => `Cette page n’est disponible qu’en ${languages}.`,
-    available: ({ language }) => `Cette page est aussi disponible en ${language} :`,
+    available: ({ language }) => `Cette page est aussi disponible en ${language}.`,
   },
   redirect: {
     title: "Redirection…",

@@ -187,7 +187,7 @@ describe("externalResources", () => {
     expect(cfg.languages.map((l: { home: string }) => l.home)).toEqual(["de/index", "index"]);
     expect(cfg.localizeDates).toBe(true);
     expect(cfg.notices.de.missing).toBe("Diese Seite ist nur auf {{}} verfügbar.");
-    expect(cfg.notices.en.available).toBe("This page is also available in {{}}:");
+    expect(cfg.notices.en.available).toBe("This page is also available in {{}}.");
     expect(res.css).toEqual([]);
   });
 

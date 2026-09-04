@@ -8,7 +8,7 @@ const esES: Translation = {
   },
   notice: {
     missing: ({ languages }) => `Esta página solo está disponible en ${languages}.`,
-    available: ({ language }) => `Esta página también está disponible en ${language}:`,
+    available: ({ language }) => `Esta página también está disponible en ${language}.`,
   },
   redirect: {
     title: "Redirigiendo…",
