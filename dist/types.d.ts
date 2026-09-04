@@ -87,6 +87,8 @@ interface ResolvedLanguage {
 }
 interface ResolvedOptions {
     languages: ResolvedLanguage[];
+    /** Languages that are published: `languages` restricted by `publishLanguages` (all when empty). */
+    activeLanguages: ResolvedLanguage[];
     defaultLanguage: string;
     detection: DetectionStrategy[];
     linking: LinkingStrategy[];

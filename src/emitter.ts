@@ -138,7 +138,7 @@ export function buildSiteData(
   return {
     version: 1,
     defaultLanguage: opts.defaultLanguage,
-    languages: opts.languages.map((l) => ({
+    languages: opts.activeLanguages.map((l) => ({
       code: l.code,
       label: l.label,
       native: l.native,
@@ -163,8 +163,8 @@ export const MultilanguageEmitter: QuartzEmitterPlugin<MultilanguageOptions> = (
     const siteData = buildSiteData(records, opts, hasSlug);
     yield await write(ctx, DATA_PATH.replace(/\.json$/, ""), ".json", JSON.stringify(siteData));
 
-    if (opts.rootRedirect !== "none" && !hasSlug("index")) {
-      const homes: HomeLink[] = opts.languages.map((l) => ({
+    if (opts.rootRedirect !== "none" && !hasSlug("index") && opts.activeLanguages.length > 0) {
+      const homes: HomeLink[] = opts.activeLanguages.map((l) => ({
         code: l.code,
         native: l.native,
         locale: l.locale,
@@ -186,11 +186,15 @@ export const MultilanguageEmitter: QuartzEmitterPlugin<MultilanguageOptions> = (
         // without listing them in allSlugs, so never write a redirect there.
         if (r.baseSlug === "index" || r.baseSlug.endsWith("/index")) continue;
         const group = siteData.pages[r.slug]?.translations ?? { [r.lang]: r.slug };
-        for (const lang of opts.languages) {
+        for (const lang of opts.activeLanguages) {
           if (group[lang.code]) continue;
           const candidate = languageSlug(r.baseSlug, lang.code, source);
           if (!candidate || emitted.has(candidate) || lower.has(candidate.toLowerCase())) continue;
-          const target = group[opts.defaultLanguage] ?? r.slug;
+          const defaultTarget = group[opts.defaultLanguage];
+          const target =
+            defaultTarget && opts.activeLanguages.some((l) => l.code === opts.defaultLanguage)
+              ? defaultTarget
+              : r.slug;
           const targetLang = findLanguage(opts, siteData.pages[target]?.lang ?? r.lang);
           const t = i18n(targetLang?.locale);
           emitted.add(candidate);

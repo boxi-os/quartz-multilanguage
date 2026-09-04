@@ -192,12 +192,13 @@ Quartz serves `content/index.md` at `/`. If you keep one home page per language 
 
 ## Notices
 
-`missingTranslationNotice` and `availableTranslationNotice` insert a hidden callout at the top of
-every page. The plugin's script compares the page language with the visitor's preferred language
-(remembered choice, then browser language) and shows the matching text in the visitor's language.
-Texts come from the plugin's own translations (`en-US`, `de-DE`, `fr-FR`, `es-ES`; others fall
-back to English). The callout uses the `callout` class, so the Obsidian callout styles apply when
-that plugin is enabled.
+`missingTranslationNotice` and `availableTranslationNotice` insert an empty, hidden callout at
+the top of every page. The plugin's script compares the page language with the visitor's
+preferred language (remembered choice, then browser language) and fills in the matching text in
+the visitor's language. Texts come from the plugin's own translations (`en-US`, `de-DE`, `fr-FR`,
+`es-ES`; others fall back to English) and never enter the build output, so descriptions and the
+search index stay clean. The callout uses the `callout` class, so the Obsidian callout styles
+apply when that plugin is enabled.
 
 ## Fallback redirects
 
@@ -222,7 +223,8 @@ Without it, dates follow the site-wide `locale`.
 ## One build per language
 
 `publishLanguages: [de]` (or `QUARTZ_LANGS=de npx quartz build`) drops every other language
-before rendering. Combine it with a per-build `quartz.config.yaml` (`locale`, `baseUrl`) to deploy
+before rendering; the switcher, hreflang, redirects and notices then only know the published
+languages. Combine it with a per-build `quartz.config.yaml` (`locale`, `baseUrl`) to deploy
 fully localized sites, including the UI strings of all other plugins, which always follow the
 site-wide `locale`.
 

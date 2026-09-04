@@ -184,6 +184,10 @@ export function resolveOptions(userOpts?: MultilanguageOptions): ResolvedOptions
 
   return {
     languages,
+    activeLanguages:
+      publishLanguages.length > 0
+        ? languages.filter((l) => publishLanguages.includes(l.code))
+        : languages,
     defaultLanguage,
     detection,
     linking,

@@ -183,6 +183,7 @@ function resolveOptions(userOpts) {
   });
   return {
     languages,
+    activeLanguages: publishLanguages.length > 0 ? languages.filter((l) => publishLanguages.includes(l.code)) : languages,
     defaultLanguage,
     detection,
     linking,
@@ -625,7 +626,7 @@ function labelFor(lang, targetSlug, opts, index) {
 }
 function switcherEntries(slug2, currentLang, translations, opts, index, hasSlug) {
   const entries = [];
-  for (const lang of opts.languages) {
+  for (const lang of opts.activeLanguages) {
     const target = translations[lang.code];
     const text = labelFor(lang, target, opts, index);
     if (lang.code === currentLang) {
@@ -654,7 +655,7 @@ var LanguageSwitcher_default = ((userOpts) => {
   const LanguageSwitcher = (props) => {
     const { fileData, allFiles, displayClass } = props;
     const slug2 = typeof fileData.slug === "string" ? fileData.slug : "";
-    if (!slug2 || opts.languages.length < 2) return null;
+    if (!slug2 || opts.activeLanguages.length < 2) return null;
     const files = Array.isArray(allFiles) ? allFiles : [];
     const index = indexFromFiles(files, opts);
     const hasSlug = (s) => index.langs.has(s) || s === slug2;
@@ -666,7 +667,7 @@ var LanguageSwitcher_default = ((userOpts) => {
     const current = findLanguage(opts, currentLang);
     const t = i18n(current?.locale);
     const title = switcher.title ?? t.switcher.title;
-    const currentText = labelFor(current ?? opts.languages[0], slug2, opts, index);
+    const currentText = labelFor(current ?? opts.activeLanguages[0], slug2, opts, index);
     const items = [];
     entries.forEach((entry, i) => {
       if (i > 0 && switcher.style === "links" && switcher.separator) {

@@ -17,6 +17,7 @@ type ClientConfig = {
   noticeAvailable: boolean;
   localizeDates: boolean;
   dataPath: string;
+  notices: Record<string, { missing: string; available: string }>;
 };
 
 const cfg: ClientConfig = {
@@ -31,6 +32,16 @@ const cfg: ClientConfig = {
   noticeAvailable: true,
   localizeDates: true,
   dataPath: "static/multilanguage.json",
+  notices: {
+    de: {
+      missing: "Diese Seite ist nur auf {{}} verfügbar.",
+      available: "Diese Seite gibt es auch auf {{}}:",
+    },
+    en: {
+      missing: "This page is only available in {{}}.",
+      available: "This page is also available in {{}}:",
+    },
+  },
 };
 
 const cleanups: (() => void)[] = [];
@@ -51,10 +62,7 @@ function mount(translations: Record<string, string>) {
     </nav>
     <article>
       <blockquote class="callout multilanguage-notice" data-ml-lang="de" data-ml-slug="de/notizen/kaffee" hidden>
-        <div class="callout-content">
-          <p data-ml-for="en" data-ml-variant="missing" hidden>This page is only available in <span data-ml-languages></span>.</p>
-          <p data-ml-for="en" data-ml-variant="available" hidden>Also in <strong>English</strong>: <a data-ml-link href="#">English</a></p>
-        </div>
+        <div class="callout-content"></div>
       </blockquote>
       <p class="content-meta"><time datetime="2026-01-04T23:00:00.000Z">Jan 05, 2026</time></p>
     </article>`;
@@ -107,12 +115,13 @@ describe("client script", () => {
     await nav();
     const notice = document.querySelector<HTMLElement>(".multilanguage-notice")!;
     expect(notice.hidden).toBe(false);
-    const available = notice.querySelector<HTMLElement>('[data-ml-variant="available"]')!;
-    expect(available.hidden).toBe(false);
-    expect(notice.querySelector<HTMLElement>('[data-ml-variant="missing"]')!.hidden).toBe(true);
-    const link = available.querySelector<HTMLAnchorElement>("a[data-ml-link]")!;
+    const p = notice.querySelector<HTMLElement>("p")!;
+    expect(p.lang).toBe("en-US");
+    expect(p.textContent).toBe("This page is also available in English: English");
+    expect(notice.querySelector("[data-ml-languages]")).toBeNull();
+    const link = p.querySelector<HTMLAnchorElement>("a[data-ml-link]")!;
     expect(link.getAttribute("href")).toBe("/en/notes/coffee");
-    expect(link.textContent).toBe("English");
+    expect(link.hreflang).toBe("en");
   });
 
   it("shows the 'missing' notice listing the available languages", async () => {
@@ -121,9 +130,9 @@ describe("client script", () => {
     await nav();
     const notice = document.querySelector<HTMLElement>(".multilanguage-notice")!;
     expect(notice.hidden).toBe(false);
-    const missing = notice.querySelector<HTMLElement>('[data-ml-variant="missing"]')!;
-    expect(missing.hidden).toBe(false);
-    expect(missing.querySelector("[data-ml-languages]")!.textContent).toBe("Deutsch");
+    expect(notice.querySelector("p")!.textContent).toBe("This page is only available in Deutsch.");
+    expect(notice.querySelector("[data-ml-languages]")!.textContent).toBe("Deutsch");
+    expect(notice.querySelector("a[data-ml-link]")).toBeNull();
   });
 
   it("stays hidden when the visitor prefers the page language or notices are off", async () => {

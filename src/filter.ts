@@ -15,10 +15,13 @@ export const MultilanguageFilter: QuartzFilterPlugin<MultilanguageOptions> = (us
     name: "Multilanguage",
     shouldPublish(ctx, [, file]) {
       const data = file.data as Record<string, unknown>;
+      if (publish.size > 0) {
+        const record = toPageRecord(data, opts);
+        if (record !== undefined && !publish.has(record.lang)) return false;
+      }
+      // Only published pages enter the registry, so hreflang never points at dropped pages.
       registerFile(ctx.buildId, data, opts);
-      if (publish.size === 0) return true;
-      const record = toPageRecord(data, opts);
-      return record === undefined || publish.has(record.lang);
+      return true;
     },
   };
 };

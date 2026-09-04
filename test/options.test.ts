@@ -74,6 +74,14 @@ describe("resolveOptions", () => {
     expect(opts.detection).toEqual([]);
   });
 
+  it("restricts activeLanguages to publishLanguages", () => {
+    const all = resolveOptions({ languages: ["de", "en"] });
+    expect(all.activeLanguages).toBe(all.languages);
+    const some = resolveOptions({ languages: ["de", "en", "fr"], publishLanguages: ["fr", "de"] });
+    expect(some.languages.map((l) => l.code)).toEqual(["de", "en", "fr"]);
+    expect(some.activeLanguages.map((l) => l.code)).toEqual(["de", "fr"]);
+  });
+
   it("lets QUARTZ_LANGS override publishLanguages", () => {
     process.env.QUARTZ_LANGS = "en, de";
     const opts = resolveOptions({ languages: ["de", "en"], publishLanguages: ["de"] });

@@ -46,7 +46,7 @@ export function switcherEntries(
   hasSlug: (s: string) => boolean,
 ): Entry[] {
   const entries: Entry[] = [];
-  for (const lang of opts.languages) {
+  for (const lang of opts.activeLanguages) {
     const target = translations[lang.code];
     const text = labelFor(lang, target, opts, index);
     if (lang.code === currentLang) {
@@ -77,7 +77,7 @@ export default ((userOpts?: MultilanguageOptions) => {
   const LanguageSwitcher: QuartzComponent = (props: QuartzComponentProps) => {
     const { fileData, allFiles, displayClass } = props;
     const slug = typeof fileData.slug === "string" ? fileData.slug : "";
-    if (!slug || opts.languages.length < 2) return null;
+    if (!slug || opts.activeLanguages.length < 2) return null;
 
     const files = (Array.isArray(allFiles) ? allFiles : []) as Record<string, unknown>[];
     const index = indexFromFiles(files, opts);
@@ -92,7 +92,7 @@ export default ((userOpts?: MultilanguageOptions) => {
     const current = findLanguage(opts, currentLang);
     const t = i18n(current?.locale);
     const title = switcher.title ?? t.switcher.title;
-    const currentText = labelFor(current ?? opts.languages[0]!, slug, opts, index);
+    const currentText = labelFor(current ?? opts.activeLanguages[0]!, slug, opts, index);
 
     const items: unknown[] = [];
     entries.forEach((entry, i) => {

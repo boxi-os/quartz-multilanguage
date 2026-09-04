@@ -11,6 +11,11 @@
     margin: 0;
   }
 
+  // Callout themes may set `display`; the hidden state must always win.
+  &[hidden] {
+    display: none !important;
+  }
+
   [hidden] {
     display: none;
   }

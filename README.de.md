@@ -215,12 +215,13 @@ Quartz liefert `content/index.md` unter `/` aus. Wer stattdessen eine Startseite
 
 ## 8. Hinweise auf fehlende oder vorhandene Übersetzungen
 
-`missingTranslationNotice` und `availableTranslationNotice` fügen oben auf jeder Seite ein
+`missingTranslationNotice` und `availableTranslationNotice` fügen oben auf jeder Seite ein leeres,
 verstecktes Callout ein. Das Script des Plugins vergleicht die Seitensprache mit der bevorzugten
-Sprache des Besuchers (gemerkte Wahl, sonst Browsersprache) und zeigt den passenden Text in der
-Sprache des Besuchers. Die Texte kommen aus den eigenen Übersetzungen des Plugins (`en-US`,
-`de-DE`, `fr-FR`, `es-ES`; andere fallen auf Englisch zurück). Das Callout trägt die Klasse
-`callout`, sodass die Obsidian-Callout-Styles greifen, wenn dieses Plugin aktiv ist.
+Sprache des Besuchers (gemerkte Wahl, sonst Browsersprache) und setzt den passenden Text in der
+Sprache des Besuchers ein. Die Texte kommen aus den eigenen Übersetzungen des Plugins (`en-US`,
+`de-DE`, `fr-FR`, `es-ES`; andere fallen auf Englisch zurück) und gelangen nie in den Build, sodass
+Beschreibungen und Suchindex sauber bleiben. Das Callout trägt die Klasse `callout`, sodass die
+Obsidian-Callout-Styles greifen, wenn dieses Plugin aktiv ist.
 
 ## 9. Fallback-Weiterleitungen
 
@@ -245,7 +246,8 @@ Option folgen Datumsangaben dem site-weiten `locale`.
 ## 12. Ein Build je Sprache
 
 `publishLanguages: [de]` (oder `QUARTZ_LANGS=de npx quartz build`) entfernt alle anderen Sprachen
-vor dem Rendern. In Kombination mit einer `quartz.config.yaml` je Build (`locale`, `baseUrl`)
+vor dem Rendern; Sprachwechsler, hreflang, Weiterleitungen und Hinweise kennen dann nur noch die
+veröffentlichten Sprachen. In Kombination mit einer `quartz.config.yaml` je Build (`locale`, `baseUrl`)
 entstehen vollständig lokalisierte Sites, inklusive der UI-Texte aller anderen Plugins, die immer
 dem site-weiten `locale` folgen.
 

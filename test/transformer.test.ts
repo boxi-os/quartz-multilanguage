@@ -7,7 +7,7 @@ import { VFile } from "vfile";
 import type { BuildCtx, FullSlug } from "@quartz-community/types";
 import { MultilanguageTransformer, absoluteUrl } from "../src/transformer";
 import { MultilanguageFilter } from "../src/filter";
-import { resetRegistry } from "../src/registry";
+import { registrySize, resetRegistry } from "../src/registry";
 import { resetWarnings } from "../src/util/warn";
 import type { MultilanguageOptions } from "../src/types";
 
@@ -167,11 +167,9 @@ describe("html stage", () => {
     expect(html).toContain('class="callout multilanguage-notice"');
     expect(html).toContain('data-ml-lang="de"');
     expect(html).toContain('data-ml-slug="de/a"');
-    expect(html).toContain('data-ml-for="en" data-ml-variant="missing"');
-    expect(html).toContain("<span data-ml-languages");
-    expect(html).toContain('data-ml-for="en" data-ml-variant="available"');
-    expect(html).toContain("<strong>English</strong>");
-    expect(html).not.toContain('data-ml-for="de"');
+    // No text in the tree: it would leak into descriptions and the search index.
+    expect(html).toContain('<div class="callout-content"></div></blockquote><p>body</p>');
+    expect(html).not.toContain("available");
   });
 });
 
@@ -188,6 +186,8 @@ describe("externalResources", () => {
     const cfg = JSON.parse(cfgJson.replace(/;$/, ""));
     expect(cfg.languages.map((l: { home: string }) => l.home)).toEqual(["de/index", "index"]);
     expect(cfg.localizeDates).toBe(true);
+    expect(cfg.notices.de.missing).toBe("Diese Seite ist nur auf {{}} verfügbar.");
+    expect(cfg.notices.en.available).toBe("This page is also available in {{}}:");
     expect(res.css).toEqual([]);
   });
 
@@ -250,8 +250,10 @@ describe("filter", () => {
     expect(all.shouldPublish(c, [{} as never, markdownFile("de/x")])).toBe(true);
 
     const deOnly = MultilanguageFilter({ ...base, publishLanguages: ["de"] });
+    resetRegistry();
     expect(deOnly.shouldPublish(c, [{} as never, markdownFile("de/x")])).toBe(true);
     expect(deOnly.shouldPublish(c, [{} as never, markdownFile("en/x")])).toBe(false);
     expect(deOnly.shouldPublish(c, [{} as never, markdownFile("x")])).toBe(false);
+    expect(registrySize()).toBe(1);
   });
 });

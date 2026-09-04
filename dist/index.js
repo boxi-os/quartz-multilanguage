@@ -440,6 +440,7 @@ function resolveOptions(userOpts) {
   });
   return {
     languages,
+    activeLanguages: publishLanguages.length > 0 ? languages.filter((l) => publishLanguages.includes(l.code)) : languages,
     defaultLanguage,
     detection,
     linking,
@@ -845,10 +846,10 @@ function i18n(locale) {
 }
 
 // src/styles/notice.scss
-var notice_default = ".multilanguage-notice {\n  margin: 0 0 1rem 0;\n  padding: 0.75rem 1rem;\n  border-left: 4px solid var(--secondary, #284b63);\n  border-radius: 5px;\n  background-color: var(--highlight, rgba(143, 159, 169, 0.15));\n}\n.multilanguage-notice p {\n  margin: 0;\n}\n.multilanguage-notice [hidden] {\n  display: none;\n}";
+var notice_default = ".multilanguage-notice {\n  margin: 0 0 1rem 0;\n  padding: 0.75rem 1rem;\n  border-left: 4px solid var(--secondary, #284b63);\n  border-radius: 5px;\n  background-color: var(--highlight, rgba(143, 159, 169, 0.15));\n}\n.multilanguage-notice p {\n  margin: 0;\n}\n.multilanguage-notice[hidden] {\n  display: none !important;\n}\n.multilanguage-notice [hidden] {\n  display: none;\n}";
 
 // src/scripts/multilanguage.inline.ts
-var multilanguage_inline_default = 'var a=window.__quartzMultilanguage,u;function m(){return document.body?.dataset?.basepath??""}function h(e){let t=e.replace(/(^|\\/)index$/,"$1");return`${m()}/${t}`}function d(e){if(!a||!e)return;let t=e.trim().toLowerCase(),n=t.split(/[-_]/)[0];return(a.languages.find(i=>i.code===t)??a.languages.find(i=>i.locale.toLowerCase()===t)??a.languages.find(i=>i.code===n))?.code}function v(){if(a?.rememberChoice)try{return d(localStorage.getItem(a.storageKey))}catch{return}}function y(){let e=v();if(e)return e;let t=navigator.languages?.length?navigator.languages:[navigator.language];for(let n of t){let o=d(n);if(o)return o}}function g(e){return a?.languages.find(t=>t.code===e)?.native??e.toUpperCase()}function L(){return document.body?.dataset?.slug??""}function p(){let e=document.querySelector(".multilanguage-switcher[data-lang]"),t=document.querySelector(".multilanguage-notice[data-ml-lang]");return e?.dataset.lang??t?.dataset.mlLang??d(document.documentElement.lang)??a?.defaultLanguage}async function w(e){let t=document.querySelector(".multilanguage-switcher[data-translations]");if(t?.dataset.translations)try{return JSON.parse(t.dataset.translations)}catch{}return a?(u??(u=fetch(`${m()}/${a.dataPath}`).then(o=>o.ok?o.json():void 0).catch(()=>{})),(await u)?.pages[e]?.translations??{}):{}}function b(){if(!a?.rememberChoice)return;let e=document.querySelectorAll(".multilanguage-switcher a[data-lang]");for(let t of e){let n=()=>{try{localStorage.setItem(a.storageKey,t.dataset.lang??"")}catch{}};t.addEventListener("click",n),window.addCleanup(()=>t.removeEventListener("click",n))}}function C(){let e=document.querySelectorAll("details.multilanguage-switcher");if(e.length===0)return;let t=i=>{for(let s of e)s.open&&!(i instanceof Node&&s.contains(i))&&(s.open=!1)},n=i=>t(i.target),o=i=>{i.key==="Escape"&&t()};document.addEventListener("click",n),document.addEventListener("keydown",o),window.addCleanup(()=>document.removeEventListener("click",n)),window.addCleanup(()=>document.removeEventListener("keydown",o))}async function E(){if(!a||!(a.noticeMissing||a.noticeAvailable))return;let e=document.querySelector(".multilanguage-notice");if(!e)return;e.hidden=!0;let t=p(),n=y();if(!t||!n||n===t)return;let o=e.dataset.mlSlug??L(),i=await w(o),s=i[n],l=s?"available":"missing";if(l==="available"&&!a.noticeAvailable||l==="missing"&&!a.noticeMissing)return;for(let r of e.querySelectorAll("[data-ml-for]"))r.hidden=!(r.dataset.mlFor===n&&r.dataset.mlVariant===l);let c=e.querySelector(`[data-ml-for="${n}"][data-ml-variant="${l}"]`);if(c){if(l==="available"&&s){let r=c.querySelector("a[data-ml-link]");r&&(r.href=h(s),r.textContent=g(n),r.hreflang=n)}else{let r=c.querySelector("[data-ml-languages]");if(r){let f=Object.keys(i).length>0?Object.keys(i):[t];r.textContent=f.map(g).join(", ")}}e.hidden=!1}}function S(){if(!a?.localizeDates)return;let e=document.documentElement.lang||a.defaultLanguage,t;try{t=new Intl.DateTimeFormat(e,{year:"numeric",month:"short",day:"2-digit"})}catch{return}for(let n of document.querySelectorAll("time[datetime]")){if(n.dataset.mlLocalized===e)continue;let o=new Date(n.dateTime);Number.isNaN(o.getTime())||(n.textContent=t.format(o),n.dataset.mlLocalized=e)}}function T(){a&&(b(),C(),S(),E())}document.addEventListener("nav",T);\n';
+var multilanguage_inline_default = 'var a=window.__quartzMultilanguage,p;function y(){return document.body?.dataset?.basepath??""}function v(e){let t=e.replace(/(^|\\/)index$/,"$1");return`${y()}/${t}`}function f(e){if(!a||!e)return;let t=e.trim().toLowerCase(),n=t.split(/[-_]/)[0];return(a.languages.find(o=>o.code===t)??a.languages.find(o=>o.locale.toLowerCase()===t)??a.languages.find(o=>o.code===n))?.code}function L(){if(a?.rememberChoice)try{return f(localStorage.getItem(a.storageKey))}catch{return}}function C(){let e=L();if(e)return e;let t=navigator.languages?.length?navigator.languages:[navigator.language];for(let n of t){let i=f(n);if(i)return i}}function m(e){return a?.languages.find(t=>t.code===e)?.native??e.toUpperCase()}function b(e){return a?.languages.find(t=>t.code===e)?.locale??e}function w(){return document.body?.dataset?.slug??""}function E(){let e=document.querySelector(".multilanguage-switcher[data-lang]"),t=document.querySelector(".multilanguage-notice[data-ml-lang]");return e?.dataset.lang??t?.dataset.mlLang??f(document.documentElement.lang)??a?.defaultLanguage}async function k(e){let t=document.querySelector(".multilanguage-switcher[data-translations]");if(t?.dataset.translations)try{return JSON.parse(t.dataset.translations)}catch{}return a?(p??(p=fetch(`${y()}/${a.dataPath}`).then(i=>i.ok?i.json():void 0).catch(()=>{})),(await p)?.pages[e]?.translations??{}):{}}function S(){if(!a?.rememberChoice)return;let e=document.querySelectorAll(".multilanguage-switcher a[data-lang]");for(let t of e){let n=()=>{try{localStorage.setItem(a.storageKey,t.dataset.lang??"")}catch{}};t.addEventListener("click",n),window.addCleanup(()=>t.removeEventListener("click",n))}}function T(){let e=document.querySelectorAll("details.multilanguage-switcher");if(e.length===0)return;let t=o=>{for(let s of e)s.open&&!(o instanceof Node&&s.contains(o))&&(s.open=!1)},n=o=>t(o.target),i=o=>{o.key==="Escape"&&t()};document.addEventListener("click",n),document.addEventListener("keydown",i),window.addCleanup(()=>document.removeEventListener("click",n)),window.addCleanup(()=>document.removeEventListener("keydown",i))}async function D(){if(!a||!(a.noticeMissing||a.noticeAvailable))return;let e=document.querySelector(".multilanguage-notice");if(!e)return;e.hidden=!0;let t=E(),n=C();if(!t||!n||n===t)return;let i=a.notices?.[n];if(!i)return;let o=e.dataset.mlSlug??w(),s=await k(o),u=s[n];if(u?!a.noticeAvailable:!a.noticeMissing)return;let h=e.querySelector(".callout-content")??e;h.replaceChildren();let c=document.createElement("p");if(c.lang=b(n),u){let[d="",g=""]=i.available.split("{{}}"),l=document.createElement("strong");l.textContent=m(n);let r=document.createElement("a");r.className="internal",r.dataset.mlLink="",r.href=v(u),r.hreflang=n,r.textContent=m(n),c.append(d,l,g," ",r)}else{let[d="",g=""]=i.missing.split("{{}}"),l=Object.keys(s).length>0?Object.keys(s):[t],r=document.createElement("span");r.dataset.mlLanguages="",r.textContent=l.map(m).join(", "),c.append(d,r,g)}h.append(c),e.hidden=!1}function M(){if(!a?.localizeDates)return;let e=document.documentElement.lang||a.defaultLanguage,t;try{t=new Intl.DateTimeFormat(e,{year:"numeric",month:"short",day:"2-digit"})}catch{return}for(let n of document.querySelectorAll("time[datetime]")){if(n.dataset.mlLocalized===e)continue;let i=new Date(n.dateTime);Number.isNaN(i.getTime())||(n.textContent=t.format(i),n.dataset.mlLocalized=e)}}function q(){a&&(S(),T(),M(),D())}document.addEventListener("nav",q);\n';
 var STORAGE_KEY = "multilanguage-lang";
 var DATA_PATH = "static/multilanguage.json";
 function fileDataOf(data, opts) {
@@ -862,7 +863,7 @@ function fileDataOf(data, opts) {
 }
 function conventionTranslations(ml, slug2, opts, hasSlug) {
   const map = { [ml.lang]: slug2 };
-  for (const lang of opts.languages) {
+  for (const lang of opts.activeLanguages) {
     if (lang.code === ml.lang) continue;
     const candidates = [languageSlug(ml.baseSlug, lang.code, ml.source)];
     if (ml.source !== "default" && lang.code === opts.defaultLanguage) candidates.push(ml.baseSlug);
@@ -885,66 +886,7 @@ function absoluteUrl(baseUrl, slug2) {
 function ogLocale(locale) {
   return locale.replace("-", "_");
 }
-function sentence(text, placeholder, inner) {
-  const [before = "", after = ""] = text.split(placeholder);
-  const nodes = [];
-  if (before) nodes.push({ type: "text", value: before });
-  nodes.push(inner);
-  if (after) nodes.push({ type: "text", value: after });
-  return nodes;
-}
-var PLACEHOLDER = "{{}}";
-function noticeElement(ml, slug2, opts) {
-  const paragraphs = [];
-  for (const lang of opts.languages) {
-    if (lang.code === ml.lang) continue;
-    const t = i18n(lang.locale);
-    if (opts.missingTranslationNotice) {
-      paragraphs.push({
-        type: "element",
-        tagName: "p",
-        properties: {
-          dataMlFor: lang.code,
-          dataMlVariant: "missing",
-          lang: lang.locale,
-          hidden: true
-        },
-        children: sentence(t.notice.missing({ languages: PLACEHOLDER }), PLACEHOLDER, {
-          type: "element",
-          tagName: "span",
-          properties: { dataMlLanguages: "" },
-          children: []
-        })
-      });
-    }
-    if (opts.availableTranslationNotice) {
-      paragraphs.push({
-        type: "element",
-        tagName: "p",
-        properties: {
-          dataMlFor: lang.code,
-          dataMlVariant: "available",
-          lang: lang.locale,
-          hidden: true
-        },
-        children: [
-          ...sentence(t.notice.available({ language: PLACEHOLDER }), PLACEHOLDER, {
-            type: "element",
-            tagName: "strong",
-            properties: {},
-            children: [{ type: "text", value: lang.native }]
-          }),
-          { type: "text", value: " " },
-          {
-            type: "element",
-            tagName: "a",
-            properties: { dataMlLink: "", href: "#", className: ["internal"] },
-            children: [{ type: "text", value: lang.native }]
-          }
-        ]
-      });
-    }
-  }
+function noticeElement(ml, slug2) {
   return {
     type: "element",
     tagName: "blockquote",
@@ -960,7 +902,7 @@ function noticeElement(ml, slug2, opts) {
         type: "element",
         tagName: "div",
         properties: { className: ["callout-content"] },
-        children: paragraphs
+        children: []
       }
     ]
   };
@@ -1029,8 +971,8 @@ var MultilanguageTransformer = (userOpts) => {
               }
             });
           }
-          if (wantsNotice && opts.languages.length > 1) {
-            tree.children.unshift(noticeElement(ml, slug2, opts));
+          if (wantsNotice && opts.activeLanguages.length > 1) {
+            tree.children.unshift(noticeElement(ml, slug2));
           }
         }
       ];
@@ -1041,7 +983,7 @@ var MultilanguageTransformer = (userOpts) => {
       const hasSlug = (s) => slugs.has(s);
       const allSlugs = ctx.allSlugs;
       const clientConfig = {
-        languages: opts.languages.map((l) => ({
+        languages: opts.activeLanguages.map((l) => ({
           code: l.code,
           label: l.label,
           native: l.native,
@@ -1049,6 +991,16 @@ var MultilanguageTransformer = (userOpts) => {
           home: homeSlug(l.code, opts, hasSlug)
         })),
         defaultLanguage: opts.defaultLanguage,
+        // Sentences per visitor language; `{{}}` marks where the script inserts names/links.
+        notices: Object.fromEntries(
+          opts.activeLanguages.map((l) => [
+            l.code,
+            {
+              missing: i18n(l.locale).notice.missing({ languages: "{{}}" }),
+              available: i18n(l.locale).notice.available({ language: "{{}}" })
+            }
+          ])
+        ),
         rememberChoice: opts.rememberChoice,
         storageKey: STORAGE_KEY,
         noticeMissing: opts.missingTranslationNotice,
@@ -1056,7 +1008,7 @@ var MultilanguageTransformer = (userOpts) => {
         localizeDates: opts.localizeDates,
         dataPath: DATA_PATH
       };
-      if (opts.seo.hreflang && !baseUrl && opts.languages.length > 1) {
+      if (opts.seo.hreflang && !baseUrl && opts.activeLanguages.length > 1) {
         warnOnce(
           "hreflang-baseurl",
           "`seo.hreflang` needs `configuration.baseUrl`; skipping hreflang links."
@@ -1072,6 +1024,10 @@ var MultilanguageTransformer = (userOpts) => {
         translations ??= conventionTranslations(ml, slug2, opts, hasSlug);
         const lang = record?.lang ?? ml.lang;
         const locale = findLanguage(opts, lang)?.locale ?? lang;
+        const active = new Set(opts.activeLanguages.map((l) => l.code));
+        translations = Object.fromEntries(
+          Object.entries(translations).filter(([code]) => code === lang || active.has(code))
+        );
         const others = Object.entries(translations).filter(([code]) => code !== lang);
         const tags = [];
         if (opts.seo.ogLocale) {
@@ -1120,10 +1076,12 @@ var MultilanguageFilter = (userOpts) => {
     name: "Multilanguage",
     shouldPublish(ctx, [, file]) {
       const data = file.data;
+      if (publish.size > 0) {
+        const record = toPageRecord(data, opts);
+        if (record !== void 0 && !publish.has(record.lang)) return false;
+      }
       registerFile(ctx.buildId, data, opts);
-      if (publish.size === 0) return true;
-      const record = toPageRecord(data, opts);
-      return record === void 0 || publish.has(record.lang);
+      return true;
     }
   };
 };
@@ -1208,7 +1166,7 @@ function buildSiteData(records2, opts, hasSlug) {
   return {
     version: 1,
     defaultLanguage: opts.defaultLanguage,
-    languages: opts.languages.map((l) => ({
+    languages: opts.activeLanguages.map((l) => ({
       code: l.code,
       label: l.label,
       native: l.native,
@@ -1227,8 +1185,8 @@ var MultilanguageEmitter = (userOpts) => {
     const baseUrl = ctx.cfg.configuration.baseUrl;
     const siteData = buildSiteData(records2, opts, hasSlug);
     yield await write(ctx, DATA_PATH.replace(/\.json$/, ""), ".json", JSON.stringify(siteData));
-    if (opts.rootRedirect !== "none" && !hasSlug("index")) {
-      const homes = opts.languages.map((l) => ({
+    if (opts.rootRedirect !== "none" && !hasSlug("index") && opts.activeLanguages.length > 0) {
+      const homes = opts.activeLanguages.map((l) => ({
         code: l.code,
         native: l.native,
         locale: l.locale,
@@ -1247,11 +1205,12 @@ var MultilanguageEmitter = (userOpts) => {
         if (source !== "folder" && source !== "suffix") continue;
         if (r.baseSlug === "index" || r.baseSlug.endsWith("/index")) continue;
         const group = siteData.pages[r.slug]?.translations ?? { [r.lang]: r.slug };
-        for (const lang of opts.languages) {
+        for (const lang of opts.activeLanguages) {
           if (group[lang.code]) continue;
           const candidate = languageSlug(r.baseSlug, lang.code, source);
           if (!candidate || emitted.has(candidate) || lower.has(candidate.toLowerCase())) continue;
-          const target = group[opts.defaultLanguage] ?? r.slug;
+          const defaultTarget = group[opts.defaultLanguage];
+          const target = defaultTarget && opts.activeLanguages.some((l) => l.code === opts.defaultLanguage) ? defaultTarget : r.slug;
           const targetLang = findLanguage(opts, siteData.pages[target]?.lang ?? r.lang);
           const t = i18n(targetLang?.locale);
           emitted.add(candidate);
@@ -1299,7 +1258,7 @@ function labelFor(lang, targetSlug, opts, index2) {
 }
 function switcherEntries(slug2, currentLang, translations, opts, index2, hasSlug) {
   const entries = [];
-  for (const lang of opts.languages) {
+  for (const lang of opts.activeLanguages) {
     const target = translations[lang.code];
     const text = labelFor(lang, target, opts, index2);
     if (lang.code === currentLang) {
@@ -1328,7 +1287,7 @@ var LanguageSwitcher_default = ((userOpts) => {
   const LanguageSwitcher = (props) => {
     const { fileData, allFiles, displayClass } = props;
     const slug2 = typeof fileData.slug === "string" ? fileData.slug : "";
-    if (!slug2 || opts.languages.length < 2) return null;
+    if (!slug2 || opts.activeLanguages.length < 2) return null;
     const files = Array.isArray(allFiles) ? allFiles : [];
     const index2 = indexFromFiles(files, opts);
     const hasSlug = (s) => index2.langs.has(s) || s === slug2;
@@ -1340,7 +1299,7 @@ var LanguageSwitcher_default = ((userOpts) => {
     const current = findLanguage(opts, currentLang);
     const t = i18n(current?.locale);
     const title = switcher.title ?? t.switcher.title;
-    const currentText = labelFor(current ?? opts.languages[0], slug2, opts, index2);
+    const currentText = labelFor(current ?? opts.activeLanguages[0], slug2, opts, index2);
     const items = [];
     entries.forEach((entry, i) => {
       if (i > 0 && switcher.style === "links" && switcher.separator) {

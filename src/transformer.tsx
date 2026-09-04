@@ -1,4 +1,4 @@
-import type { Element, Root, Text } from "hast";
+import type { Element, Root } from "hast";
 import type { FullSlug, QuartzTransformerPlugin } from "@quartz-community/types";
 import { resolveRelative, simplifySlug } from "@quartz-community/utils/path";
 import { visit } from "unist-util-visit";
@@ -41,7 +41,7 @@ export function conventionTranslations(
   hasSlug: (s: string) => boolean,
 ): TranslationMap {
   const map: TranslationMap = { [ml.lang]: slug };
-  for (const lang of opts.languages) {
+  for (const lang of opts.activeLanguages) {
     if (lang.code === ml.lang) continue;
     const candidates = [languageSlug(ml.baseSlug, lang.code, ml.source)];
     if (ml.source !== "default" && lang.code === opts.defaultLanguage) candidates.push(ml.baseSlug);
@@ -67,69 +67,12 @@ function ogLocale(locale: string): string {
   return locale.replace("-", "_");
 }
 
-/** Splits a translated sentence around a placeholder into HAST nodes with an element in between. */
-function sentence(text: string, placeholder: string, inner: Element): (Text | Element)[] {
-  const [before = "", after = ""] = text.split(placeholder);
-  const nodes: (Text | Element)[] = [];
-  if (before) nodes.push({ type: "text", value: before });
-  nodes.push(inner);
-  if (after) nodes.push({ type: "text", value: after });
-  return nodes;
-}
-
-const PLACEHOLDER = "{{}}"; // never part of a translation
-
-function noticeElement(ml: MultilanguageFileData, slug: string, opts: ResolvedOptions): Element {
-  const paragraphs: Element[] = [];
-  for (const lang of opts.languages) {
-    if (lang.code === ml.lang) continue;
-    const t = i18n(lang.locale);
-    if (opts.missingTranslationNotice) {
-      paragraphs.push({
-        type: "element",
-        tagName: "p",
-        properties: {
-          dataMlFor: lang.code,
-          dataMlVariant: "missing",
-          lang: lang.locale,
-          hidden: true,
-        },
-        children: sentence(t.notice.missing({ languages: PLACEHOLDER }), PLACEHOLDER, {
-          type: "element",
-          tagName: "span",
-          properties: { dataMlLanguages: "" },
-          children: [],
-        }),
-      });
-    }
-    if (opts.availableTranslationNotice) {
-      paragraphs.push({
-        type: "element",
-        tagName: "p",
-        properties: {
-          dataMlFor: lang.code,
-          dataMlVariant: "available",
-          lang: lang.locale,
-          hidden: true,
-        },
-        children: [
-          ...sentence(t.notice.available({ language: PLACEHOLDER }), PLACEHOLDER, {
-            type: "element",
-            tagName: "strong",
-            properties: {},
-            children: [{ type: "text", value: lang.native }],
-          }),
-          { type: "text", value: " " },
-          {
-            type: "element",
-            tagName: "a",
-            properties: { dataMlLink: "", href: "#", className: ["internal"] },
-            children: [{ type: "text", value: lang.native }],
-          },
-        ],
-      });
-    }
-  }
+/**
+ * The notice container is deliberately empty: the client script fills in the text for the
+ * visitor's language. Text in the tree would leak into the description and search index of
+ * plugins that run after this one.
+ */
+function noticeElement(ml: MultilanguageFileData, slug: string): Element {
   return {
     type: "element",
     tagName: "blockquote",
@@ -145,7 +88,7 @@ function noticeElement(ml: MultilanguageFileData, slug: string, opts: ResolvedOp
         type: "element",
         tagName: "div",
         properties: { className: ["callout-content"] },
-        children: paragraphs,
+        children: [],
       },
     ],
   };
@@ -231,8 +174,8 @@ export const MultilanguageTransformer: QuartzTransformerPlugin<MultilanguageOpti
             });
           }
 
-          if (wantsNotice && opts.languages.length > 1) {
-            tree.children.unshift(noticeElement(ml, slug, opts));
+          if (wantsNotice && opts.activeLanguages.length > 1) {
+            tree.children.unshift(noticeElement(ml, slug));
           }
         },
       ];
@@ -245,7 +188,7 @@ export const MultilanguageTransformer: QuartzTransformerPlugin<MultilanguageOpti
       const allSlugs = ctx.allSlugs;
 
       const clientConfig = {
-        languages: opts.languages.map((l) => ({
+        languages: opts.activeLanguages.map((l) => ({
           code: l.code,
           label: l.label,
           native: l.native,
@@ -253,6 +196,16 @@ export const MultilanguageTransformer: QuartzTransformerPlugin<MultilanguageOpti
           home: homeSlug(l.code, opts, hasSlug),
         })),
         defaultLanguage: opts.defaultLanguage,
+        // Sentences per visitor language; `{{}}` marks where the script inserts names/links.
+        notices: Object.fromEntries(
+          opts.activeLanguages.map((l) => [
+            l.code,
+            {
+              missing: i18n(l.locale).notice.missing({ languages: "{{}}" }),
+              available: i18n(l.locale).notice.available({ language: "{{}}" }),
+            },
+          ]),
+        ),
         rememberChoice: opts.rememberChoice,
         storageKey: STORAGE_KEY,
         noticeMissing: opts.missingTranslationNotice,
@@ -261,7 +214,7 @@ export const MultilanguageTransformer: QuartzTransformerPlugin<MultilanguageOpti
         dataPath: DATA_PATH,
       };
 
-      if (opts.seo.hreflang && !baseUrl && opts.languages.length > 1) {
+      if (opts.seo.hreflang && !baseUrl && opts.activeLanguages.length > 1) {
         warnOnce(
           "hreflang-baseurl",
           "`seo.hreflang` needs `configuration.baseUrl`; skipping hreflang links.",
@@ -278,6 +231,10 @@ export const MultilanguageTransformer: QuartzTransformerPlugin<MultilanguageOpti
         translations ??= conventionTranslations(ml, slug, opts, hasSlug);
         const lang = record?.lang ?? ml.lang;
         const locale = findLanguage(opts, lang)?.locale ?? lang;
+        const active = new Set(opts.activeLanguages.map((l) => l.code));
+        translations = Object.fromEntries(
+          Object.entries(translations).filter(([code]) => code === lang || active.has(code)),
+        );
         const others = Object.entries(translations).filter(([code]) => code !== lang);
 
         const tags: unknown[] = [];

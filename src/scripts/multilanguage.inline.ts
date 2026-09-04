@@ -13,6 +13,7 @@ type ClientConfig = {
   noticeAvailable: boolean;
   localizeDates: boolean;
   dataPath: string;
+  notices: Record<string, { missing: string; available: string }>;
 };
 type PageData = { lang: string; translations?: Record<string, string> };
 type SiteData = { pages: Record<string, PageData> };
@@ -66,6 +67,10 @@ function preferredLanguage(): string | undefined {
 
 function nativeName(code: string): string {
   return cfg?.languages.find((l) => l.code === code)?.native ?? code.toUpperCase();
+}
+
+function localeOf(code: string): string {
+  return cfg?.languages.find((l) => l.code === code)?.locale ?? code;
 }
 
 function currentSlug(): string {
@@ -147,36 +152,39 @@ async function showNotice(): Promise<void> {
   const lang = pageLanguage();
   const preferred = preferredLanguage();
   if (!lang || !preferred || preferred === lang) return;
+  const texts = cfg.notices?.[preferred];
+  if (!texts) return;
 
   const slug = notice.dataset.mlSlug ?? currentSlug();
   const translations = await translationsFor(slug);
   const target = translations[preferred];
-  const variant = target ? "available" : "missing";
-  if (variant === "available" && !cfg.noticeAvailable) return;
-  if (variant === "missing" && !cfg.noticeMissing) return;
+  if (target ? !cfg.noticeAvailable : !cfg.noticeMissing) return;
 
-  for (const p of notice.querySelectorAll<HTMLElement>("[data-ml-for]")) {
-    p.hidden = !(p.dataset.mlFor === preferred && p.dataset.mlVariant === variant);
-  }
-  const active = notice.querySelector<HTMLElement>(
-    `[data-ml-for="${preferred}"][data-ml-variant="${variant}"]`,
-  );
-  if (!active) return;
+  const container = notice.querySelector<HTMLElement>(".callout-content") ?? notice;
+  container.replaceChildren();
+  const p = document.createElement("p");
+  p.lang = localeOf(preferred);
 
-  if (variant === "available" && target) {
-    const link = active.querySelector<HTMLAnchorElement>("a[data-ml-link]");
-    if (link) {
-      link.href = slugToPath(target);
-      link.textContent = nativeName(preferred);
-      link.hreflang = preferred;
-    }
+  if (target) {
+    const [before = "", after = ""] = texts.available.split("{{}}");
+    const strong = document.createElement("strong");
+    strong.textContent = nativeName(preferred);
+    const link = document.createElement("a");
+    link.className = "internal";
+    link.dataset.mlLink = "";
+    link.href = slugToPath(target);
+    link.hreflang = preferred;
+    link.textContent = nativeName(preferred);
+    p.append(before, strong, after, " ", link);
   } else {
-    const span = active.querySelector<HTMLElement>("[data-ml-languages]");
-    if (span) {
-      const available = Object.keys(translations).length > 0 ? Object.keys(translations) : [lang];
-      span.textContent = available.map(nativeName).join(", ");
-    }
+    const [before = "", after = ""] = texts.missing.split("{{}}");
+    const available = Object.keys(translations).length > 0 ? Object.keys(translations) : [lang];
+    const span = document.createElement("span");
+    span.dataset.mlLanguages = "";
+    span.textContent = available.map(nativeName).join(", ");
+    p.append(before, span, after);
   }
+  container.append(p);
   notice.hidden = false;
 }
 
