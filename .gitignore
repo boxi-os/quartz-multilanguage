@@ -43,3 +43,7 @@ coverage/
 
 # Claude: local project settings
 .claude/settings.local.json
+
+# Claude: locally linked skills (symlinks with absolute paths) and personal project config
+.claude/skills/
+.claude/wiki-docs.json
