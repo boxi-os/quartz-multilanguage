@@ -1,0 +1,161 @@
+{
+  "name": "quartz-multilanguage",
+  "version": "0.1.0",
+  "description": "Quartz v5 plugin for multilingual content: language detection, translation linking, language switcher, hreflang and language-aware redirects.",
+  "type": "module",
+  "license": "MIT",
+  "author": "boxi-os",
+  "homepage": "https://github.com/boxi-os/quartz-multilanguage",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/boxi-os/quartz-multilanguage"
+  },
+  "keywords": [
+    "quartz",
+    "quartz-plugin",
+    "quartz-component",
+    "i18n",
+    "multilingual",
+    "language-switcher",
+    "hreflang"
+  ],
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./types": {
+      "types": "./dist/types.d.ts",
+      "import": "./dist/types.js"
+    },
+    "./components": {
+      "types": "./dist/components/index.d.ts",
+      "import": "./dist/components/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "lint": "eslint . --max-warnings=0",
+    "format": "prettier . --check",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "check": "npm run typecheck && npm run lint && npm run format && npm run test",
+    "prepublishOnly": "npm run build"
+  },
+  "peerDependencies": {
+    "preact": "^10.0.0",
+    "vfile": "^6.0.3"
+  },
+  "dependencies": {
+    "@quartz-community/types": "^0.2.1",
+    "@quartz-community/utils": "^0.1.0"
+  },
+  "devDependencies": {
+    "@types/hast": "^3.0.4",
+    "@types/mdast": "^4.0.4",
+    "@types/node": "^24.10.0",
+    "@typescript-eslint/eslint-plugin": "^7.18.0",
+    "@typescript-eslint/parser": "^7.18.0",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "github-slugger": "^2.0.0",
+    "preact": "^10.28.2",
+    "prettier": "^3.6.2",
+    "rehype-parse": "^9.0.1",
+    "rehype-stringify": "^10.0.1",
+    "remark-parse": "^11.0.0",
+    "remark-rehype": "^11.1.2",
+    "sass": "^1.97.3",
+    "tsup": "^8.5.0",
+    "typescript": "^5.9.3",
+    "unified": "^11.0.5",
+    "unist-util-visit": "^5.1.0",
+    "vfile": "^6.0.3",
+    "vitest": "^2.1.9"
+  },
+  "quartz": {
+    "name": "quartz-multilanguage",
+    "displayName": "Multilanguage",
+    "description": "Multilingual content for Quartz: language detection, translation linking, language switcher, hreflang and redirects.",
+    "category": [
+      "transformer",
+      "filter",
+      "emitter",
+      "component"
+    ],
+    "version": "0.1.0",
+    "quartzVersion": ">=5.0.0",
+    "dependencies": [],
+    "defaultOrder": 65,
+    "defaultEnabled": true,
+    "defaultOptions": {
+      "languages": [
+        {
+          "code": "en",
+          "label": "English",
+          "locale": "en-US"
+        }
+      ],
+      "defaultLanguage": "en",
+      "detection": [
+        "folder",
+        "suffix",
+        "frontmatter"
+      ],
+      "linking": [
+        "frontmatter",
+        "aliases",
+        "path"
+      ],
+      "frontmatterKeys": {
+        "lang": "lang",
+        "key": "translationKey",
+        "translations": "translations"
+      },
+      "rootRedirect": "none",
+      "rememberChoice": true,
+      "seo": {
+        "hreflang": true,
+        "ogLocale": true,
+        "xDefault": "default"
+      },
+      "switcher": {
+        "style": "links",
+        "label": "label",
+        "showCurrent": true,
+        "missing": "home",
+        "separator": "|"
+      },
+      "missingTranslationNotice": false,
+      "fallbackPages": "none",
+      "rewriteCrossLanguageLinks": false,
+      "localizeDates": false,
+      "publishLanguages": []
+    },
+    "components": {
+      "LanguageSwitcher": {
+        "displayName": "Language Switcher",
+        "defaultPosition": "left",
+        "defaultPriority": 32
+      }
+    }
+  },
+  "engines": {
+    "node": ">=22",
+    "npm": ">=10.9.2"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
