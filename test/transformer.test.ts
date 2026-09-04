@@ -128,6 +128,23 @@ describe("html stage", () => {
     expect(data.links).toEqual([]);
   });
 
+  it("handles the raw data-slug property name written by crawl-links", async () => {
+    const plugin = MultilanguageTransformer({ ...base, rewriteCrossLanguageLinks: true });
+    const [rehypePlugin] = plugin.htmlPlugins!(ctx(["de/a", "de/b", "en/b"])) as [() => unknown];
+    const run = rehypePlugin() as (tree: unknown, file: VFile) => void;
+    const file = new VFile({ value: "" });
+    file.data.slug = "de/a" as FullSlug;
+    const anchor = {
+      type: "element",
+      tagName: "a",
+      properties: { href: "../en/b", "data-slug": "en/b", className: ["internal"] },
+      children: [],
+    };
+    run({ type: "root", children: [anchor] }, file);
+    expect(anchor.properties["data-slug"]).toBe("de/b");
+    expect(anchor.properties.href).toBe("../de/b");
+  });
+
   it("lets the default language fall back to un-prefixed pages", async () => {
     const c = ctx(["a", "b", "de/b"]);
     const { html } = await runHtml(

@@ -1005,7 +1005,8 @@ var MultilanguageTransformer = (userOpts) => {
           if (opts.rewriteCrossLanguageLinks) {
             visit(tree, "element", (node) => {
               if (node.tagName !== "a") return;
-              const target = node.properties?.dataSlug;
+              const slugKey = "data-slug" in node.properties ? "data-slug" : "dataSlug";
+              const target = node.properties[slugKey];
               if (typeof target !== "string" || !target) return;
               const targetMl = detectLanguage({ slug: target }, opts);
               if (targetMl.lang === ml.lang || targetMl.source === "default") return;
@@ -1018,7 +1019,7 @@ var MultilanguageTransformer = (userOpts) => {
               const href = typeof node.properties.href === "string" ? node.properties.href : "";
               const anchor = href.includes("#") ? href.slice(href.indexOf("#")) : "";
               node.properties.href = resolveRelative(slug2, replacement) + anchor;
-              node.properties.dataSlug = replacement;
+              node.properties[slugKey] = replacement;
               const links = data.links;
               if (Array.isArray(links)) {
                 const from = simplifySlug(target);

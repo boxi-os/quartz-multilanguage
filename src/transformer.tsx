@@ -201,7 +201,9 @@ export const MultilanguageTransformer: QuartzTransformerPlugin<MultilanguageOpti
           if (opts.rewriteCrossLanguageLinks) {
             visit(tree, "element", (node: Element) => {
               if (node.tagName !== "a") return;
-              const target = node.properties?.dataSlug;
+              // crawl-links writes the raw attribute name, not the camelCased HAST property.
+              const slugKey = "data-slug" in node.properties ? "data-slug" : "dataSlug";
+              const target = node.properties[slugKey];
               if (typeof target !== "string" || !target) return;
               const targetMl = detectLanguage({ slug: target }, opts);
               if (targetMl.lang === ml.lang || targetMl.source === "default") return;
@@ -217,7 +219,7 @@ export const MultilanguageTransformer: QuartzTransformerPlugin<MultilanguageOpti
               const anchor = href.includes("#") ? href.slice(href.indexOf("#")) : "";
               node.properties.href =
                 resolveRelative(slug as FullSlug, replacement as FullSlug) + anchor;
-              node.properties.dataSlug = replacement;
+              node.properties[slugKey] = replacement;
 
               const links = data.links;
               if (Array.isArray(links)) {
