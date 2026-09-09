@@ -291,6 +291,14 @@ npm run build   # schreibt dist/ (committed, Quartz installiert daraus)
 `dist/` ist absichtlich committed. Nach jeder Änderung unter `src/` `npm run build` ausführen und
 das aktualisierte `dist/` mit committen.
 
+## 17. Wie das hier entstanden ist
+
+Ein Hobbyprojekt, größtenteils mit [Claude Code](https://claude.com/claude-code) geschrieben; die
+Commits sagen das mit einer `Co-Authored-By`-Zeile. Offen bleibt dabei die Frage, die sich lohnt:
+Hat das jemand geprüft? `npm run check` fährt Typcheck, Linter, Formatprüfung, 58 Tests und den
+Bau, und die CI tut bei jedem Push dasselbe. Das ist keine Garantie, aber es ist etwas, das du
+selbst laufen lassen kannst, bevor du dem Plugin vertraust.
+
 ## Lizenz
 
 MIT
