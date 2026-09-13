@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.1.2] - 2026-09-13
 
 ### Fixed
 
@@ -13,7 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   the transformer, so Quartz fell back to the site locale and `en/docs/index` came out as
   `lang="de"` while its `og:locale` said `en_US`. The emitter now sets the attribute in the
   written page, using the same language detection as `og:locale`; pages whose frontmatter sets
-  `lang` are left alone.
+  `lang` are left alone. Generated pages of the default language now carry its full locale
+  (`lang="de-DE"` instead of `lang="de"`), like the Markdown pages.
 
 ## [0.1.1] - 2026-09-13
 
