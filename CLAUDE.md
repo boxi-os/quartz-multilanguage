@@ -7,7 +7,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 `quartz-multilanguage` is a [Quartz](https://quartz.jzhao.xyz) v5 community plugin for multilingual
 content. It combines a **transformer** (language detection, `<html lang>`, hreflang/og:locale,
 link rewriting, notice injection), a **filter** (page registry, `publishLanguages`), an
-**emitter** (`static/multilanguage.json`, root redirect, fallback redirects) and one
+**emitter** (`static/multilanguage.json`, root redirect, fallback redirects, `<html lang>` of
+generated pages) and one
 **component** (`LanguageSwitcher`). The scaffold follows the sibling project `quartz-layout-box`
 (same tooling, `dist/` committed, installed via `github:`).
 
@@ -65,7 +66,11 @@ Run tests matching a name: `npx vitest run -t "aliases"`
   component.
 - All factories receive the same raw YAML `options`; manifest `defaultOptions` are **not** merged.
 - Emit order: `ComponentResources` → `PageTypeDispatcher` (renders pages) → other emitters. Our
-  emitter therefore runs **after** pages are rendered; nothing rendered may depend on it.
+  emitter therefore runs **after** pages are rendered; nothing rendered may depend on it. That is
+  also what lets it correct `<html lang>` of generated folder and tag pages (`ctx.virtualPages`),
+  which never pass the transformer: Quartz renders the attribute from `frontmatter.lang` before any
+  plugin hook sees those pages, so the emitter rewrites it in the written file (also in serve mode,
+  where the dispatcher runs first as well).
 
 ### Build system (`tsup.config.ts`)
 

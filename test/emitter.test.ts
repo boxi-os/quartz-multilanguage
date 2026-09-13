@@ -4,7 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import { VFile } from "vfile";
 import type { BuildCtx, FullSlug, ProcessedContent } from "@quartz-community/types";
-import { MultilanguageEmitter, redirectHtml, rootRedirectHtml } from "../src/emitter";
+import { MultilanguageEmitter, redirectHtml, rootRedirectHtml, withHtmlLang } from "../src/emitter";
 import { resolveOptions } from "../src/options";
 import { resetWarnings } from "../src/util/warn";
 import type { MultilanguageOptions } from "../src/types";
@@ -37,21 +37,32 @@ function content(slug: string, frontmatter: Record<string, unknown> = {}): Proce
   return [{ type: "root", children: [] }, file];
 }
 
-function ctx(pages: ProcessedContent[], baseUrl?: string): BuildCtx {
+function ctx(
+  pages: ProcessedContent[],
+  baseUrl?: string,
+  virtualPages: ProcessedContent[] = [],
+): BuildCtx {
+  // `virtualPages` exists in Quartz's BuildCtx but not yet in @quartz-community/types.
   return {
+    virtualPages,
     buildId: "b1",
     argv: { directory: "content", output: out, serve: false } as BuildCtx["argv"],
     cfg: { configuration: { baseUrl } },
     allSlugs: pages.map(([, f]) => f.data.slug!),
     allFiles: [],
     incremental: false,
-  };
+  } as BuildCtx;
 }
 
-async function run(opts: MultilanguageOptions, pages: ProcessedContent[], baseUrl?: string) {
+async function run(
+  opts: MultilanguageOptions,
+  pages: ProcessedContent[],
+  baseUrl?: string,
+  virtualPages: ProcessedContent[] = [],
+) {
   const emitter = MultilanguageEmitter(opts);
   const files: string[] = [];
-  for await (const f of emitter.emit(ctx(pages, baseUrl), pages, {
+  for await (const f of emitter.emit(ctx(pages, baseUrl, virtualPages), pages, {
     css: [],
     js: [],
     additionalHead: [],
@@ -135,7 +146,60 @@ describe("MultilanguageEmitter", () => {
   });
 });
 
+describe("generated pages", () => {
+  function writePage(rel: string, lang: string) {
+    fs.mkdirSync(path.dirname(path.join(out, rel)), { recursive: true });
+    fs.writeFileSync(
+      path.join(out, rel),
+      `<!DOCTYPE html>\n<html lang="${lang}" dir="ltr"><head></head><body data-lang="x"></body></html>`,
+    );
+  }
+
+  it("sets <html lang> of folder and tag pages to the detected language", async () => {
+    const opts = { ...base, defaultLanguage: "de" };
+    writePage("en/docs/index.html", "de");
+    writePage("docs/index.html", "de");
+    writePage("tags/foo.html", "de");
+    writePage("de/manual/index.html", "de");
+    const virtual = [
+      content("en/docs/index", { title: "docs" }),
+      content("docs/index", { title: "docs" }),
+      content("tags/foo", { title: "foo" }),
+      content("de/manual/index", { title: "manual", lang: "fr" }),
+    ];
+    const files = await run(opts, [content("en/docs/setup")], undefined, virtual);
+    expect(read("en/docs/index.html")).toContain('<html lang="en-US" dir="ltr">');
+    expect(read("docs/index.html")).toContain('<html lang="de-DE" dir="ltr">');
+    expect(read("tags/foo.html")).toContain('<html lang="de-DE"');
+    // An explicit frontmatter language is left alone, and so is the rest of the page.
+    expect(read("de/manual/index.html")).toContain('<html lang="de" dir="ltr">');
+    expect(read("en/docs/index.html")).toContain('<body data-lang="x">');
+    expect(files).toEqual(
+      expect.arrayContaining(["en/docs/index.html", "docs/index.html", "tags/foo.html"]),
+    );
+    expect(files).not.toContain("de/manual/index.html");
+  });
+
+  it("skips pages that were not written and pages that are already right", async () => {
+    writePage("en/right/index.html", "en-US");
+    const files = await run(base, [], undefined, [
+      content("en/right/index"),
+      content("en/missing/index"),
+    ]);
+    expect(files.filter((f) => f.endsWith(".html"))).toEqual([]);
+  });
+});
+
 describe("html helpers", () => {
+  it("replaces or adds the lang attribute of the html tag", () => {
+    expect(withHtmlLang('<html lang="de" dir="ltr"><p lang="de">', "en-US")).toBe(
+      '<html lang="en-US" dir="ltr"><p lang="de">',
+    );
+    expect(withHtmlLang("<html><body>", "en")).toBe('<html lang="en"><body>');
+    expect(withHtmlLang('<html lang="en">', "en")).toBeUndefined();
+    expect(withHtmlLang("<p>no document</p>", "en")).toBeUndefined();
+  });
+
   it("escapes redirect targets", () => {
     const html = redirectHtml({ title: "<t>", url: '../a"b', lang: "en", text: "go" });
     expect(html).toContain("<title>&lt;t&gt;</title>");

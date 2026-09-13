@@ -1154,6 +1154,15 @@ ${links}
 </html>
 `;
 }
+function withHtmlLang(html, locale) {
+  const match = /<html\b[^>]*>/i.exec(html);
+  if (!match) return void 0;
+  const tag = match[0];
+  const attr = ` lang="${escapeHTML(locale)}"`;
+  const next = /\slang="[^"]*"/i.test(tag) ? tag.replace(/\slang="[^"]*"/i, attr) : tag.replace(/^<html/i, `<html${attr}`);
+  if (next === tag) return void 0;
+  return html.slice(0, match.index) + next + html.slice(match.index + tag.length);
+}
 function buildSiteData(records2, opts, hasSlug) {
   const index2 = buildTranslationIndex(records2, opts);
   const pages = {};
@@ -1178,7 +1187,31 @@ function buildSiteData(records2, opts, hasSlug) {
 }
 var MultilanguageEmitter = (userOpts) => {
   const opts = resolveOptions(userOpts);
+  async function* fixGeneratedPageLang(ctx) {
+    const generated = ctx.virtualPages ?? [];
+    for (const [, file] of generated) {
+      const data = file.data;
+      const slug2 = typeof data.slug === "string" ? data.slug : "";
+      if (!slug2 || slug2 === "404") continue;
+      const frontmatter = data.frontmatter && typeof data.frontmatter === "object" ? data.frontmatter : void 0;
+      if (typeof frontmatter?.lang === "string" && frontmatter.lang.trim()) continue;
+      const { lang } = detectLanguage({ slug: slug2, frontmatter }, opts);
+      const locale = findLanguage(opts, lang)?.locale ?? lang;
+      const target = joinSegments(ctx.argv.output, `${slug2}.html`);
+      let html;
+      try {
+        html = await fs.readFile(target, "utf8");
+      } catch {
+        continue;
+      }
+      const fixed = withHtmlLang(html, locale);
+      if (fixed === void 0) continue;
+      await fs.writeFile(target, fixed);
+      yield target;
+    }
+  }
   async function* run(ctx, content) {
+    yield* fixGeneratedPageLang(ctx);
     const records2 = content.map(([, file]) => toPageRecord(file.data, opts)).filter((r) => r !== void 0);
     const slugs = /* @__PURE__ */ new Set([...ctx.allSlugs, ...records2.map((r) => r.slug)]);
     const hasSlug = (s) => slugs.has(s);

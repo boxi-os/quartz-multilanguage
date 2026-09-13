@@ -24,7 +24,9 @@ transformer, a filter, an emitter and one component.
    (`indexFromFiles`, cached by array identity) and renders links. The transformer's
    `externalResources` injects the browser script with its configuration on every page.
 6. **Emit** (after pages are rendered): the emitter writes `static/multilanguage.json`, the root
-   `index.html` redirect (if no root index page exists) and fallback redirect pages.
+   `index.html` redirect (if no root index page exists) and fallback redirect pages, and sets
+   `<html lang>` in the written files of generated folder and tag pages (`ctx.virtualPages`),
+   which Quartz rendered with the site locale because they never passed the transformer.
 7. **Browser**: `multilanguage.inline.ts` reads the remembered / browser language, stores explicit
    choices, shows the notice variant for the visitor's language (translations from the switcher's
    `data-translations` or `static/multilanguage.json`), closes dropdowns and localizes dates.
