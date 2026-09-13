@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-09-13
+
+### Fixed
+
+- The "also available" notice no longer leaks into the page description and the search index:
+  the transformer injects only an empty container and the client script builds the sentence from
+  texts shipped in its config. The notice links the language name itself instead of repeating it,
+  and the hidden notice wins over callout display rules.
+- `publishLanguages` is honoured everywhere: it also restricts the language switcher, the
+  `hreflang` / `og:locale` links, the root and fallback redirects, and the filter registers only
+  published pages.
+- `<html lang>` is synced after SPA navigation. Quartz's router kept the previous page's value,
+  so dates were formatted in the wrong language after switching.
+- The switcher no longer wraps inside the toolbar.
+
 ## [0.1.0] - 2026-09-04
 
 ### Added

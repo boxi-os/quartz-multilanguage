@@ -1,6 +1,6 @@
 {
   "name": "quartz-multilanguage",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Quartz v5 plugin for multilingual content: language detection, translation linking, language switcher, hreflang and language-aware redirects.",
   "type": "module",
   "license": "MIT",
@@ -95,7 +95,7 @@
       "emitter",
       "component"
     ],
-    "version": "0.1.0",
+    "version": "0.1.1",
     "quartzVersion": ">=5.0.0",
     "dependencies": [],
     "defaultOrder": 65,
