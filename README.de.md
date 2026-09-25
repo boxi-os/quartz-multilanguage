@@ -128,7 +128,7 @@ und ich möchte hier nichts verbergen.
 
 ## Wie gut ist der Code geprüft?
 
-`npm run check` fährt Typcheck, Linter, Formatprüfung, 58 Tests und den Bau; die CI tut bei
+`npm run check` fährt Typcheck, Linter, Formatprüfung, 61 Tests und den Bau; die CI tut bei
 jedem Push dasselbe. Das ist keine Garantie, aber es ist etwas, das ihr selbst laufen lassen könnt,
 bevor ihr dem Plugin vertraut.
 
