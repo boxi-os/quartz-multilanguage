@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- `quartz.configSchema` in `package.json`: a JSON Schema of every option, nested ones included,
+  with descriptions in English and German, groups, an order, German labels for the choices, and
+  the conditions under which `switcher.separator` and `seo.xDefault` apply. Quartz itself only
+  passes it on; editors such as QuartzControl build their option form from it. A test holds the
+  schema against `MultilanguageOptions` and every interface it uses, and against
+  `quartz.defaultOptions`, in both directions.
+
+### Fixed
+
+- `quartz.defaultOptions` names `availableTranslationNotice` (`false`, as in the code). An editor
+  reading the manifest had no default to show for it.
+
 ## [0.1.2] - 2026-09-13
 
 ### Fixed
