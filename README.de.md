@@ -4,7 +4,7 @@ Mehrsprachige Inhalte für [Quartz](https://quartz.jzhao.xyz) v5. Quartz kennt n
 Site; dieses Plugin ergänzt alles, was nötig ist, um dieselben Notizen aus einem Vault in mehreren
 Sprachen zu veröffentlichen.
 
-**📖 Das Handbuch steht auf [boxi-os.github.io/quartz-multilanguage](https://boxi-os.github.io/quartz-multilanguage/)** —
+**📖 Das Handbuch steht auf [boxi-os.github.io/quartz-plugins/multilanguage](https://boxi-os.github.io/quartz-plugins/multilanguage/)** —
 neun Kapitel auf Deutsch und Englisch, jede Option am Beispiel und die Gründe für die sperrigen
 Stellen. Diese README ist die Kurzfassung.
 
@@ -46,7 +46,7 @@ plugins:
 ```
 
 `order` zählt nur für `rewriteCrossLanguageLinks` — siehe
-[7.2](https://boxi-os.github.io/quartz-multilanguage/7-hinweise/02-links-zwischen-sprachen).
+[7.2](https://boxi-os.github.io/quartz-plugins/multilanguage/7-hinweise/02-links-zwischen-sprachen).
 
 ## Optionen
 
@@ -90,17 +90,17 @@ Die Standardwerte liegen im Plugin-Code; Quartz reicht die YAML-Optionen unverä
 Alles Weitere — Inhalte ordnen, Übersetzungen verknüpfen, der Umschalter, SEO, Weiterleitungen,
 Hinweise und ein Build je Sprache — steht im Handbuch:
 
-| Kapitel                                                                                |                                                                       |
-| -------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
-| [1 Einstieg](https://boxi-os.github.io/quartz-multilanguage/1-einstieg/)               | Was Quartz allein kann, die erste zweisprachige Site, die sechs Teile |
-| [2 Spracherkennung](https://boxi-os.github.io/quartz-multilanguage/2-spracherkennung/) | Ordner, Suffix, Frontmatter — und der Basispfad                       |
-| [3 Verknüpfen](https://boxi-os.github.io/quartz-multilanguage/3-verknuepfen/)          | `translationKey`, Aliase, Pfad, und wenn es nicht klappt              |
-| [4 Der Umschalter](https://boxi-os.github.io/quartz-multilanguage/4-umschalter/)       | Formen, Beschriftungen, fehlende Übersetzungen                        |
-| [5 Adressen](https://boxi-os.github.io/quartz-multilanguage/5-adressen/)               | `hreflang`, `x-default`, `og:locale`, `html lang`                     |
-| [6 Weiterleitungen](https://boxi-os.github.io/quartz-multilanguage/6-weiterleitungen/) | Die Startseite, fehlende Seiten                                       |
-| [7 Hinweise und Links](https://boxi-os.github.io/quartz-multilanguage/7-hinweise/)     | Die zwei Hinweise, Links zwischen Sprachen, Daten                     |
-| [8 Bauen](https://boxi-os.github.io/quartz-multilanguage/8-bauen/)                     | Eine Site für alle, oder eine je Sprache                              |
-| [9 Nachschlagen](https://boxi-os.github.io/quartz-multilanguage/9-nachschlagen/)       | Alle Optionen, der Explorer-Filter, die Grenzen                       |
+| Kapitel                                                                                        |                                                                       |
+| ---------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| [1 Einstieg](https://boxi-os.github.io/quartz-plugins/multilanguage/1-einstieg/)               | Was Quartz allein kann, die erste zweisprachige Site, die sechs Teile |
+| [2 Spracherkennung](https://boxi-os.github.io/quartz-plugins/multilanguage/2-spracherkennung/) | Ordner, Suffix, Frontmatter — und der Basispfad                       |
+| [3 Verknüpfen](https://boxi-os.github.io/quartz-plugins/multilanguage/3-verknuepfen/)          | `translationKey`, Aliase, Pfad, und wenn es nicht klappt              |
+| [4 Der Umschalter](https://boxi-os.github.io/quartz-plugins/multilanguage/4-umschalter/)       | Formen, Beschriftungen, fehlende Übersetzungen                        |
+| [5 Adressen](https://boxi-os.github.io/quartz-plugins/multilanguage/5-adressen/)               | `hreflang`, `x-default`, `og:locale`, `html lang`                     |
+| [6 Weiterleitungen](https://boxi-os.github.io/quartz-plugins/multilanguage/6-weiterleitungen/) | Die Startseite, fehlende Seiten                                       |
+| [7 Hinweise und Links](https://boxi-os.github.io/quartz-plugins/multilanguage/7-hinweise/)     | Die zwei Hinweise, Links zwischen Sprachen, Daten                     |
+| [8 Bauen](https://boxi-os.github.io/quartz-plugins/multilanguage/8-bauen/)                     | Eine Site für alle, oder eine je Sprache                              |
+| [9 Nachschlagen](https://boxi-os.github.io/quartz-plugins/multilanguage/9-nachschlagen/)       | Alle Optionen, der Explorer-Filter, die Grenzen                       |
 
 Die englische Fassung dieser README steht in [README.md](README.md).
 
